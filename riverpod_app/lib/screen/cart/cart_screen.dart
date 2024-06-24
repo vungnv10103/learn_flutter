@@ -23,29 +23,36 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         centerTitle: true,
         // actions: [],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Column(
-              children: carts.map((cart) {
-                return Container(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: Row(
-                    children: [
-                      Image.asset(cart.image, width: 60, height: 60),
-                      const SizedBox(width: 10),
-                      Text(cart.title),
-                      const Expanded(child: SizedBox()),
-                      Text('\$${cart.price}')
-                    ],
-                  ),
-                );
-              }).toList(), // output cart products here
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+                itemCount: carts.length,
+                itemBuilder: (context, index) {
+                  final cart = carts.elementAt(index);
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    child: Row(
+                      children: [
+                        Image.asset(cart.image, width: 60, height: 60),
+                        const SizedBox(width: 10),
+                        Text(cart.title),
+                        const Expanded(child: SizedBox()),
+                        Text('\$${cart.price}')
+                      ],
+                    ),
+                  );
+                }),
+          ),
+          Text(
+            'Toal price: \$$total',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
-            Text('Toal price - \$$total')
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

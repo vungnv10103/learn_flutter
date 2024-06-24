@@ -1,4 +1,3 @@
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_app/models/product.dart';
 
@@ -52,7 +51,25 @@ const List<Product> allProducts = [
     title: 'Electric Guitar',
     price: 79,
     image: 'assets/products/guitar.png',
-  )
+  ),
+  Product(
+    id: '9',
+    title: 'Electric Guitar 2',
+    price: 90,
+    image: 'assets/products/guitar.png',
+  ),
+  Product(
+    id: '10',
+    title: 'Roller Skates 2',
+    price: 66,
+    image: 'assets/products/skates.png',
+  ),
+  Product(
+    id: '11',
+    title: 'Drum & Sticks 2',
+    price: 35,
+    image: 'assets/products/drum.png',
+  ),
 ];
 
 // final productsProvider = Provider((ref) {
@@ -67,6 +84,7 @@ const List<Product> allProducts = [
 List<Product> products(ref) {
   return allProducts;
 }
+
 @riverpod
 List<Product> reducedProducts(ref) {
   return allProducts.where((p) => p.price < 50).toList();
