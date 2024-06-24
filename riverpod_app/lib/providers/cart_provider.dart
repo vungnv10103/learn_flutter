@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_app/models/product.dart';
 
@@ -20,6 +19,12 @@ class CartNotifier extends Notifier<Set<Product>> {
   void addProduct(Product product) {
     if (!state.contains(product)) {
       state = {...state, product};
+    }
+  }
+
+  void removeProduct(Product product) {
+    if (state.contains(product)) {
+      state = state.where((p) => p.id != product.id).toSet();
     }
   }
 }
