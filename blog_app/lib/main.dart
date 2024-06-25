@@ -1,3 +1,5 @@
+import 'package:blog_app/core/theme/theme.dart';
+import 'package:blog_app/features/auth/presentation/pages/sigup_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,12 +12,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Blog App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: ''),
+      theme: AppTheme.darkThemeMode,
+      home: const SigupPage(),
     );
   }
 }
