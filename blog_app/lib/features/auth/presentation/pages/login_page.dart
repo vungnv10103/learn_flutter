@@ -61,7 +61,10 @@ class _SigupPageState extends State<LoginPage> {
                 isObscureText: true,
               ),
               const SizedBox(height: 16),
-              const AuthGradientButton(title: "Sign In"),
+              AuthGradientButton(
+                title: "Sign In",
+                onPressed: () {},
+              ),
               const SizedBox(height: 16),
               GestureDetector(
                 onTap: () {
