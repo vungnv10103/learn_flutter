@@ -33,6 +33,12 @@ class _NowPlayingState extends State<NowPlaying>
   }
 
   @override
+  void dispose() {
+    _audioPlayerManager.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     const delta = 64;
@@ -203,6 +209,17 @@ class _NowPlayingState extends State<NowPlaying>
           progress: progress,
           total: total,
           buffered: buffered,
+          onSeek: (value) {
+            _audioPlayerManager.player.seek(value);
+          },
+          barHeight: 5.0,
+          barCapShape: BarCapShape.round,
+          baseBarColor: Colors.grey.withOpacity(0.3),
+          progressBarColor: Colors.red,
+          bufferedBarColor: Colors.grey.withOpacity(0.3),
+          thumbColor: Colors.red,
+          thumbGlowColor: Colors.red.withOpacity(0.5), // when seek
+          thumbRadius: 8,
         );
       },
     );
