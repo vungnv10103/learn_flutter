@@ -23,11 +23,13 @@ class _NowPlayingState extends State<NowPlaying>
   late AudioPlayerManager _audioPlayerManager;
   late Song _song;
   late int _selectedItemIndex;
+  late double _currentAnimationPosition;
 
   @override
   void initState() {
     _song = widget.playingSong;
     _selectedItemIndex = widget.songs.indexOf(_song);
+    _currentAnimationPosition = 0.0;
     _imageAnimationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 12));
     _audioPlayerManager = AudioPlayerManager(songUrl: _song.source);
@@ -38,6 +40,7 @@ class _NowPlayingState extends State<NowPlaying>
   @override
   void dispose() {
     _audioPlayerManager.dispose();
+    _imageAnimationController.dispose();
     super.dispose();
   }
 
@@ -193,6 +196,9 @@ class _NowPlayingState extends State<NowPlaying>
           return MediaButtonControl(
             function: () {
               _audioPlayerManager.player.play();
+              _imageAnimationController.forward(
+                  from: _currentAnimationPosition);
+              _imageAnimationController.repeat();
             },
             icon: Icons.play_circle,
             colorIcon: Colors.black,
@@ -202,15 +208,24 @@ class _NowPlayingState extends State<NowPlaying>
           return MediaButtonControl(
             function: () {
               _audioPlayerManager.player.pause();
+              _imageAnimationController.stop();
+              _currentAnimationPosition = _imageAnimationController.value;
             },
             icon: Icons.pause_circle,
             colorIcon: Colors.black,
             sizeIcon: 64,
           );
         } else {
+          if (processingState == ProcessingState.completed) {
+            _currentAnimationPosition = 0;
+            _imageAnimationController.stop();
+          }
           return MediaButtonControl(
             function: () {
               _audioPlayerManager.player.seek(Duration.zero);
+              _imageAnimationController.forward(
+                  from: _currentAnimationPosition);
+              _imageAnimationController.repeat();
             },
             icon: Icons.replay,
             colorIcon: Colors.black,
