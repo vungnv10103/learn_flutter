@@ -2,6 +2,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/data/model/song.dart';
 import 'package:music_app/ui/play/audio_player_manager.dart';
+import 'package:just_audio/just_audio.dart';
 
 class NowPlaying extends StatefulWidget {
   final List<Song> songs;
@@ -125,12 +126,7 @@ class _NowPlayingState extends State<NowPlaying>
           colorIcon: Colors.deepPurple,
           sizeIcon: 36,
         ),
-        MediaButtonControl(
-          function: () {},
-          icon: Icons.play_circle,
-          colorIcon: Colors.deepPurple,
-          sizeIcon: 64,
-        ),
+        _playerButton(),
         MediaButtonControl(
           function: () {},
           icon: Icons.skip_next,
@@ -144,6 +140,53 @@ class _NowPlayingState extends State<NowPlaying>
           sizeIcon: 24,
         )
       ],
+    );
+  }
+
+  StreamBuilder<PlayerState> _playerButton() {
+    return StreamBuilder(
+      stream: _audioPlayerManager.player.playerStateStream,
+      builder: (context, snapshot) {
+        final playState = snapshot.data;
+        final processingState = playState?.processingState;
+        final playing = playState?.playing;
+        if (processingState == ProcessingState.loading ||
+            processingState == ProcessingState.buffering) {
+          return Container(
+            margin: const EdgeInsets.all(24),
+            height: 32,
+            width: 32,
+            child: const CircularProgressIndicator.adaptive(),
+          );
+        } else if (playing != true) {
+          return MediaButtonControl(
+            function: () {
+              _audioPlayerManager.player.play();
+            },
+            icon: Icons.play_circle,
+            colorIcon: null,
+            sizeIcon: 64,
+          );
+        } else if (processingState != ProcessingState.completed) {
+          return MediaButtonControl(
+            function: () {
+              _audioPlayerManager.player.pause();
+            },
+            icon: Icons.pause_circle,
+            colorIcon: null,
+            sizeIcon: 64,
+          );
+        } else {
+          return MediaButtonControl(
+            function: () {
+              _audioPlayerManager.player.seek(Duration.zero);
+            },
+            icon: Icons.replay,
+            colorIcon: null,
+            sizeIcon: 64,
+          );
+        }
+      },
     );
   }
 
