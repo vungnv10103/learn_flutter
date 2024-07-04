@@ -2,7 +2,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AudioPlayerManager {
-  final String songUrl;
+  String songUrl;
   final player = AudioPlayer();
   Stream<DurationState>? durationState;
 
@@ -21,6 +21,11 @@ class AudioPlayerManager {
       },
     );
     player.setUrl(songUrl);
+  }
+
+  void updateSongUrl(String url) {
+    songUrl = url;
+    init();
   }
 
   void dispose() {

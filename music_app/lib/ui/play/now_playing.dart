@@ -21,13 +21,16 @@ class _NowPlayingState extends State<NowPlaying>
     with SingleTickerProviderStateMixin {
   late AnimationController _imageAnimationController;
   late AudioPlayerManager _audioPlayerManager;
+  late Song _song;
+  late int _selectedItemIndex;
 
   @override
   void initState() {
+    _song = widget.playingSong;
+    _selectedItemIndex = widget.songs.indexOf(_song);
     _imageAnimationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 12));
-    _audioPlayerManager =
-        AudioPlayerManager(songUrl: widget.playingSong.source);
+    _audioPlayerManager = AudioPlayerManager(songUrl: _song.source);
     _audioPlayerManager.init();
     super.initState();
   }
@@ -58,7 +61,7 @@ class _NowPlayingState extends State<NowPlaying>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                widget.playingSong.album,
+                _song.album,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 24),
@@ -69,7 +72,7 @@ class _NowPlayingState extends State<NowPlaying>
                   borderRadius: BorderRadius.circular(radius),
                   child: FadeInImage.assetNetwork(
                     placeholder: "assets/images/music_icon.png",
-                    image: widget.playingSong.image,
+                    image: _song.image,
                     width: screenWidth - delta,
                     height: screenWidth - delta,
                     imageErrorBuilder: (context, error, stackTrace) {
@@ -90,12 +93,12 @@ class _NowPlayingState extends State<NowPlaying>
                   Column(
                     children: [
                       Text(
-                        widget.playingSong.title,
+                        _song.title,
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        widget.playingSong.artist,
+                        _song.artist,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -123,30 +126,52 @@ class _NowPlayingState extends State<NowPlaying>
         MediaButtonControl(
           function: () {},
           icon: Icons.shuffle_outlined,
-          colorIcon: Colors.deepPurple,
+          colorIcon: Colors.black,
           sizeIcon: 24,
         ),
         MediaButtonControl(
-          function: () {},
+          function: setPreviousSong,
           icon: Icons.skip_previous,
-          colorIcon: Colors.deepPurple,
+          colorIcon: Colors.black,
           sizeIcon: 36,
         ),
         _playerButton(),
         MediaButtonControl(
-          function: () {},
+          function: setNextSong,
           icon: Icons.skip_next,
-          colorIcon: Colors.deepPurple,
+          colorIcon: Colors.black,
           sizeIcon: 36,
         ),
         MediaButtonControl(
           function: () {},
           icon: Icons.repeat,
-          colorIcon: Colors.deepPurple,
+          colorIcon: Colors.black,
           sizeIcon: 24,
         )
       ],
     );
+  }
+
+  void setNextSong() {
+    _selectedItemIndex++;
+    if (_selectedItemIndex == widget.songs.length) {
+      _selectedItemIndex = 0;
+    }
+    final nextSong = widget.songs[_selectedItemIndex];
+    _audioPlayerManager.updateSongUrl(nextSong.source);
+    setState(() {
+      _song = nextSong;
+    });
+  }
+
+  void setPreviousSong() {
+    if (_selectedItemIndex == 0) return;
+    _selectedItemIndex--;
+    final nextSong = widget.songs[_selectedItemIndex];
+    _audioPlayerManager.updateSongUrl(nextSong.source);
+    setState(() {
+      _song = nextSong;
+    });
   }
 
   StreamBuilder<PlayerState> _playerButton() {
@@ -170,7 +195,7 @@ class _NowPlayingState extends State<NowPlaying>
               _audioPlayerManager.player.play();
             },
             icon: Icons.play_circle,
-            colorIcon: null,
+            colorIcon: Colors.black,
             sizeIcon: 64,
           );
         } else if (processingState != ProcessingState.completed) {
@@ -179,7 +204,7 @@ class _NowPlayingState extends State<NowPlaying>
               _audioPlayerManager.player.pause();
             },
             icon: Icons.pause_circle,
-            colorIcon: null,
+            colorIcon: Colors.black,
             sizeIcon: 64,
           );
         } else {
@@ -188,7 +213,7 @@ class _NowPlayingState extends State<NowPlaying>
               _audioPlayerManager.player.seek(Duration.zero);
             },
             icon: Icons.replay,
-            colorIcon: null,
+            colorIcon: Colors.black,
             sizeIcon: 64,
           );
         }
