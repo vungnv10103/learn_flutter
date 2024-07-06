@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_app/data/model/song.dart';
 import 'package:music_app/ui/discovery/discovery.dart';
 import 'package:music_app/ui/home/view_model.dart';
+import 'package:music_app/ui/play/audio_player_manager.dart';
 import 'package:music_app/ui/play/now_playing.dart';
 import 'package:music_app/ui/settings/settings.dart';
 import 'package:music_app/ui/user/user.dart';
@@ -116,6 +117,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _viewModel.songStreams.close();
+    AudioPlayerManager().dispose();
     super.dispose();
   }
 
